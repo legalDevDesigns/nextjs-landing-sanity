@@ -1,7 +1,9 @@
-# Netlify configuration for Next.js static site
+# Netlify configuration for Next.js site
 [build]
   command = "npm run build"
+  # Changed publish directory for standard Next.js deployment
   publish = ".next"
+  # Added comment to force git change detection
 
 [build.environment]
   NODE_VERSION = "22"
