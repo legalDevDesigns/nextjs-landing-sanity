@@ -1,7 +1,7 @@
 # Netlify configuration for Next.js static site
 [build]
   command = "npm run build"
-  publish = "out"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "22"
