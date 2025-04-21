@@ -146,7 +146,8 @@ export default function HomeClient({ siteData }) {
               </div>
               {hero.formTitle && (
                 <div className="flex justify-center md:justify-end">
-                  <form name="contact" method="POST" netlify="true" netlify-honeypot="bot-field" onSubmit={handleSubmit} className="w-full max-w-md bg-white/10 backdrop-blur-sm p-8 rounded-lg">
+                  {/* Temporarily comment out onSubmit to diagnose build error */}
+                  <form name="contact" method="POST" netlify="true" netlify-honeypot="bot-field" /* onSubmit={handleSubmit} */ className="w-full max-w-md bg-white/10 backdrop-blur-sm p-8 rounded-lg">
                     <input type="hidden" name="form-name" value="contact" />
                     <p hidden><label>Don't fill this out if you're human: <input name="bot-field" /></label></p>
                     <h2 className="text-2xl font-semibold mb-6 text-white">{hero.formTitle}</h2>
