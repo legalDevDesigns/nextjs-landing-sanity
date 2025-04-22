@@ -57,7 +57,7 @@ export default function HomeClient({ siteData }) {
 
   return (
     <main className="min-h-screen">
-      {/* Remove the hidden Netlify form, it's replaced by public/__forms.html */}
+      {/* Remove the commented out block below */}
       {/* 
       <form name="contact" netlify="true" netlify-honeypot="bot-field" hidden>
         <input type="text" name="name" />
