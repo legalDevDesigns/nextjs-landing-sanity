@@ -1,8 +1,37 @@
+'use client';
+
 import { urlForImage } from '@/app/sanity/lib/image'
+import { useState } from 'react';
 
 export default function Hero({ title, subtitle, backgroundImage, formTitle }) {
   const imageUrl = backgroundImage ? urlForImage(backgroundImage).url() : '/images/hero-bg.jpg'
-  
+  const [formStatus, setFormStatus] = useState('');
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    setFormStatus('submitting');
+    const formData = new FormData(event.target);
+
+    try {
+      const response = await fetch("/__forms.html", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData).toString(),
+      });
+
+      if (response.ok) {
+        setFormStatus('success');
+        event.target.reset();
+        console.log('Form submitted successfully!');
+      } else {
+        throw new Error(`Form submission failed with status: ${response.status}`);
+      }
+    } catch (error) {
+      setFormStatus('error');
+      console.error('Form submission error:', error);
+    }
+  };
+
   return (
     <div className="relative min-h-[600px] flex items-center" style={{ backgroundImage: `url(${imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
@@ -17,7 +46,12 @@ export default function Hero({ title, subtitle, backgroundImage, formTitle }) {
           </div>
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4">{formTitle}</h2>
-            <form id="contact-form" name="contact" method="POST" data-netlify="true" className="space-y-4">
+            <form 
+              id="contact-form" 
+              name="contact" 
+              onSubmit={handleFormSubmit} 
+              className="space-y-4"
+            >
               <input type="hidden" name="form-name" value="contact" />
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
@@ -35,9 +69,15 @@ export default function Hero({ title, subtitle, backgroundImage, formTitle }) {
                 <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
                 <textarea id="message" name="message" rows="3" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
               </div>
-              <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Submit
+              <button 
+                type="submit" 
+                disabled={formStatus === 'submitting'}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+              >
+                {formStatus === 'submitting' ? 'Submitting...' : 'Submit'}
               </button>
+              {formStatus === 'success' && <p className="mt-4 text-green-600">Thank you! Message sent.</p>}
+              {formStatus === 'error' && <p className="mt-4 text-red-600">Error sending message.</p>}
             </form>
           </div>
         </div>

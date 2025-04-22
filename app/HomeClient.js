@@ -19,43 +19,33 @@ export default function HomeClient({ siteData }) {
     message: '',
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+  const [formStatus, setFormStatus] = useState('');
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    setFormStatus('submitting');
+    const formData = new FormData(event.target);
+
     try {
-      const formBody = new URLSearchParams({
-        'form-name': 'contact',
-        ...formData
-      }).toString();
-      
-      console.log('Submitting form with data:', formBody);
-      
-      const response = await fetch('/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formBody
+      const response = await fetch("/__forms.html", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData).toString(),
       });
 
-      console.log('Response status:', response.status);
-      
       if (response.ok) {
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          message: '',
-        });
-        alert('Thank you for your message! We will get back to you soon.');
+        setFormStatus('success');
+        setFormData({ name: '', email: '', phone: '', message: '' }); // Clear form
+        // Optionally, display a success message to the user
+        console.log('Form submitted successfully!');
+        // You might want to show a user-friendly message here instead of just console logging
       } else {
-        const responseText = await response.text();
-        console.error('Form submission error:', responseText);
-        throw new Error('Form submission failed. Please try again.');
+        throw new Error(`Form submission failed with status: ${response.status}`);
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('There was an error submitting your message. Please try again.');
+      setFormStatus('error');
+      console.error('Form submission error:', error);
+      // Optionally, display an error message to the user
     }
   };
 
@@ -100,13 +90,15 @@ export default function HomeClient({ siteData }) {
 
   return (
     <main className="min-h-screen">
-      {/* Hidden form for Netlify - Needs businessInfo for fields if used */}
+      {/* Remove the hidden Netlify form, it's replaced by public/__forms.html */}
+      {/* 
       <form name="contact" netlify="true" netlify-honeypot="bot-field" hidden>
         <input type="text" name="name" />
         <input type="email" name="email" />
         <input type="tel" name="phone" />
         <textarea name="message"></textarea>
       </form>
+      */}
 
       {/* Top Bar - Uses businessInfo */}
       {businessInfo.name && (
@@ -146,7 +138,11 @@ export default function HomeClient({ siteData }) {
               </div>
               {hero.formTitle && (
                 <div className="flex justify-center md:justify-end">
-                  <form name="contact" method="POST" netlify="true" netlify-honeypot="bot-field" onSubmit={handleSubmit} className="w-full max-w-md bg-white/10 backdrop-blur-sm p-8 rounded-lg">
+                  <form 
+                    name="contact" 
+                    onSubmit={handleFormSubmit} 
+                    className="w-full max-w-md bg-white/10 backdrop-blur-sm p-8 rounded-lg"
+                  >
                     <input type="hidden" name="form-name" value="contact" />
                     <p hidden><label>Don't fill this out if you're human: <input name="bot-field" /></label></p>
                     <h2 className="text-2xl font-semibold mb-6 text-white">{hero.formTitle}</h2>
@@ -188,9 +184,15 @@ export default function HomeClient({ siteData }) {
                         className="w-full px-4 py-2 rounded bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
                       ></textarea>
                     </div>
-                    <button type="submit" className="w-full mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                      Send Message
+                    <button 
+                      type="submit" 
+                      disabled={formStatus === 'submitting'} 
+                      className="w-full mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                    >
+                      {formStatus === 'submitting' ? 'Submitting...' : 'Send Message'}
                     </button>
+                    {formStatus === 'success' && <p className="mt-4 text-green-300">Thank you! Your message has been sent.</p>}
+                    {formStatus === 'error' && <p className="mt-4 text-red-400">Sorry, there was an error submitting your message. Please try again.</p>}
                   </form>
                 </div>
               )}
