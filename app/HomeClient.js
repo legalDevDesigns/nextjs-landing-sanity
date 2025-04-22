@@ -12,42 +12,9 @@ const portableTextComponents = {
 }
 
 export default function HomeClient({ siteData }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-  });
-
-  const [formStatus, setFormStatus] = useState('');
-
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-    setFormStatus('submitting');
-    const formData = new FormData(event.target);
-
-    try {
-      const response = await fetch("/__forms.html", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(formData).toString(),
-      });
-
-      if (response.ok) {
-        setFormStatus('success');
-        setFormData({ name: '', email: '', phone: '', message: '' }); // Clear form
-        // Optionally, display a success message to the user
-        console.log('Form submitted successfully!');
-        // You might want to show a user-friendly message here instead of just console logging
-      } else {
-        throw new Error(`Form submission failed with status: ${response.status}`);
-      }
-    } catch (error) {
-      setFormStatus('error');
-      console.error('Form submission error:', error);
-      // Optionally, display an error message to the user
-    }
-  };
+  // Remove formData and formStatus state unless used elsewhere
+  // const [formData, setFormData] = useState({ ... });
+  // const [formStatus, setFormStatus] = useState('');
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -140,7 +107,9 @@ export default function HomeClient({ siteData }) {
                 <div className="flex justify-center md:justify-end">
                   <form 
                     name="contact" 
-                    onSubmit={handleFormSubmit} 
+                    method="POST" 
+                    data-netlify="true"
+                    data-netlify-honeypot="bot-field"
                     className="w-full max-w-md bg-white/10 backdrop-blur-sm p-8 rounded-lg"
                   >
                     <input type="hidden" name="form-name" value="contact" />
@@ -150,8 +119,6 @@ export default function HomeClient({ siteData }) {
                       <input
                         type="text"
                         name="name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="Your Name"
                         required
                         className="w-full px-4 py-2 rounded bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
@@ -159,8 +126,6 @@ export default function HomeClient({ siteData }) {
                       <input
                         type="email"
                         name="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="Your Email"
                         required
                         className="w-full px-4 py-2 rounded bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
@@ -168,16 +133,11 @@ export default function HomeClient({ siteData }) {
                       <input
                         type="tel"
                         name="phone"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         placeholder="Your Phone"
-                        required
                         className="w-full px-4 py-2 rounded bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
                       />
                       <textarea
                         name="message"
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         placeholder="Your Message"
                         required
                         rows="4"
@@ -186,13 +146,10 @@ export default function HomeClient({ siteData }) {
                     </div>
                     <button 
                       type="submit" 
-                      disabled={formStatus === 'submitting'} 
                       className="w-full mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                     >
-                      {formStatus === 'submitting' ? 'Submitting...' : 'Send Message'}
+                      Send Message
                     </button>
-                    {formStatus === 'success' && <p className="mt-4 text-green-300">Thank you! Your message has been sent.</p>}
-                    {formStatus === 'error' && <p className="mt-4 text-red-400">Sorry, there was an error submitting your message. Please try again.</p>}
                   </form>
                 </div>
               )}
