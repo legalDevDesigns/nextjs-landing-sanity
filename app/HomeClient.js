@@ -15,6 +15,8 @@ export default function HomeClient({ siteData }) {
   // Remove formData and formStatus state unless used elsewhere
   // const [formData, setFormData] = useState({ ... });
   // const [formStatus, setFormStatus] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(''); // '', 'success', 'error'
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -28,6 +30,35 @@ export default function HomeClient({ siteData }) {
       return <i className={`${feature.customIconClass} text-4xl mb-4`}></i>;
     } 
     return null;
+  };
+
+  // Helper to handle Netlify form submission
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('');
+    const formData = new FormData(event.target);
+
+    try {
+      const response = await fetch('/__forms.html', { // Target the static HTML file
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData).toString(),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        // Optionally clear the form or show a success message
+        event.target.reset(); // Clear form fields
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!siteData || siteData.title === 'Page Not Found') {
@@ -105,13 +136,16 @@ export default function HomeClient({ siteData }) {
               </div>
               {hero.formTitle && (
                 <div className="flex justify-center md:justify-end">
-                  <form 
-                    name="contact" 
-                    method="POST" 
-                    data-netlify="true"
-                    data-netlify-honeypot="bot-field"
+                  <form
+                    name="contact"
+                    method="POST"
+                    // Remove Netlify attributes from here - they are in __forms.html now
+                    // data-netlify="true"
+                    // data-netlify-honeypot="bot-field"
+                    onSubmit={handleFormSubmit} // Add onSubmit handler
                     className="w-full max-w-md bg-white/10 backdrop-blur-sm p-8 rounded-lg"
                   >
+                    {/* Keep standard hidden inputs */}
                     <input type="hidden" name="form-name" value="contact" />
                     <p hidden><label>Don't fill this out if you're human: <input name="bot-field" /></label></p>
                     <h2 className="text-2xl font-semibold mb-6 text-white">{hero.formTitle}</h2>
@@ -144,12 +178,22 @@ export default function HomeClient({ siteData }) {
                         className="w-full px-4 py-2 rounded bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
                       ></textarea>
                     </div>
-                    <button 
-                      type="submit" 
-                      className="w-full mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-                    >
-                      Send Message
-                    </button>
+                    <div className="flex justify-center">
+                      <button
+                        type="submit"
+                        className="w-full mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                        disabled={isSubmitting} // Disable button while submitting
+                      >
+                        {isSubmitting ? 'Sending...' : 'Send Message'}
+                      </button>
+                    </div>
+                    {/* Add Success/Error Messages */}
+                    {submitStatus === 'success' && (
+                      <p className="mt-4 text-center text-green-400">Thanks for your message! We'll be in touch soon.</p>
+                    )}
+                    {submitStatus === 'error' && (
+                      <p className="mt-4 text-center text-red-400">Something went wrong. Please try again later.</p>
+                    )}
                   </form>
                 </div>
               )}
