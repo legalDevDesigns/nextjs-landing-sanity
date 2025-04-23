@@ -40,7 +40,7 @@ export default function HomeClient({ siteData }) {
     const formData = new FormData(event.target);
 
     try {
-      const response = await fetch('/__forms.html', { // Target the static HTML file
+      const response = await fetch('/.netlify/functions/submit-form', { // Target the Netlify function
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(formData).toString(),
