@@ -139,9 +139,6 @@ export default function HomeClient({ siteData }) {
                   <form
                     name="contact"
                     method="POST"
-                    // Remove Netlify attributes from here - they are in __forms.html now
-                    // data-netlify="true"
-                    // data-netlify-honeypot="bot-field"
                     onSubmit={handleFormSubmit} // Add onSubmit handler
                     className="w-full max-w-md bg-white/10 backdrop-blur-sm p-8 rounded-lg"
                   >
