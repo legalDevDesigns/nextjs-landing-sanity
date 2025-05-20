@@ -34,10 +34,68 @@ export default defineType({
     { name: 'content', title: 'Page Content', icon: PresentationChartLineIcon, default: true },
     { name: 'businessInfo', title: 'Business Info', icon: InformationCircleIcon },
     { name: 'seo', title: 'SEO & Settings', icon: CogIcon },
+    { name: 'theme', title: 'Theme Settings', icon: CogIcon },
   ],
 
   // --- Define Fields ---
   fields: [
+    // --- Theme Settings (Theme Settings Group) ---
+    defineField({
+      name: 'useDefaultTheme',
+      title: 'Use Default Theme',
+      type: 'boolean',
+      group: 'theme',
+      description: 'If checked, a predefined default color scheme will be used, ignoring the color pickers below.',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'primaryColor',
+      title: 'Button Color',
+      type: 'color',
+      group: 'theme',
+      description: 'Select the primary color for the website theme (e.g., for buttons).',
+      hidden: ({document}) => document?.useDefaultTheme === true,
+    }),
+    defineField({
+      name: 'buttonTextColorChoice',
+      title: 'Button Text Color',
+      type: 'string',
+      group: 'theme',
+      options: {
+        list: [
+          {title: 'Light', value: 'light'},
+          {title: 'Dark', value: 'dark'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'light',
+      description: 'Choose light or dark text for elements using the Button Color.',
+      hidden: ({document}) => document?.useDefaultTheme === true,
+    }),
+    defineField({
+      name: 'secondaryColor',
+      title: 'Header Color',
+      type: 'color',
+      group: 'theme',
+      description: 'Select the secondary color for the website theme (e.g., for the header).',
+      hidden: ({document}) => document?.useDefaultTheme === true,
+    }),
+    defineField({
+      name: 'headerFooterTextColorChoice',
+      title: 'Header & Footer Text Color',
+      type: 'string',
+      group: 'theme',
+      options: {
+        list: [
+          {title: 'Light', value: 'light'},
+          {title: 'Dark', value: 'dark'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'light',
+      description: 'Choose light or dark text for elements using the Header Color (e.g., header, footer).',
+      hidden: ({document}) => document?.useDefaultTheme === true,
+    }),
     // --- Core Identification (SEO & Settings Group) ---
     defineField({
       name: 'title',

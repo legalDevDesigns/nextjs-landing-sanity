@@ -5,6 +5,15 @@ import Image from 'next/image';
 import { PortableText } from '@portabletext/react';
 import { urlFor } from './sanity/lib/client';
 
+// Helper function to convert hex to RGBA
+const hexToRgba = (hex, alpha = 1) => {
+  if (!hex || typeof hex !== 'string') return null; // Return null or a default if hex is invalid
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 // Define custom components for Portable Text if needed
 const portableTextComponents = {
   // types: { ... }, // If you have custom block types
@@ -80,6 +89,21 @@ export default function HomeClient({ siteData }) {
   const secondaryCta = safeSiteData.secondaryCta || {};
   const map = safeSiteData.map || {};
 
+  // Define default theme colors
+  const DEFAULT_PRIMARY_COLOR = '#2864ec'; // Default Button Color
+  const DEFAULT_SECONDARY_COLOR = '#203c9c'; // Default Header Color
+
+  const TEXT_LIGHT = '#FFFFFF';
+  const TEXT_DARK = '#212529'; // A common dark color
+
+  // Extract colors and text color choices
+  const useDefaultTheme = safeSiteData.useDefaultTheme;
+  const primaryColor = useDefaultTheme ? DEFAULT_PRIMARY_COLOR : (safeSiteData.primaryColorValue || DEFAULT_PRIMARY_COLOR);
+  const secondaryColor = useDefaultTheme ? DEFAULT_SECONDARY_COLOR : (safeSiteData.secondaryColorValue || DEFAULT_SECONDARY_COLOR);
+
+  const buttonTextColor = useDefaultTheme ? TEXT_LIGHT : (safeSiteData.buttonTextColorChoice === 'dark' ? TEXT_DARK : TEXT_LIGHT);
+  const headerFooterTextColor = useDefaultTheme ? TEXT_LIGHT : (safeSiteData.headerFooterTextColorChoice === 'dark' ? TEXT_DARK : TEXT_LIGHT);
+
   // Pre-build image URLs - Pass the .asset object to urlFor
   const heroImageUrl = urlFor(hero.backgroundImage?.asset)?.url();
   const aboutImageUrl = urlFor(about.image?.asset)?.url();
@@ -100,19 +124,19 @@ export default function HomeClient({ siteData }) {
 
       {/* Top Bar - Uses businessInfo */}
       {businessInfo.name && (
-        <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-2 px-4 fixed w-full z-50">
+        <div style={{ backgroundColor: secondaryColor, color: headerFooterTextColor }} className="py-2 px-4 w-full z-50">
           <div className="container mx-auto flex justify-between items-center">
             <span className="font-bold">{businessInfo.name}</span>
             <div className="flex space-x-4">
-              {businessInfo.phone && <a href={`tel:${businessInfo.phone}`} className="hover:text-blue-300 text-sm">{businessInfo.phone}</a>}
-              {businessInfo.email && <a href={`mailto:${businessInfo.email}`} className="hover:text-blue-300 text-sm">{businessInfo.email}</a>}
+              {businessInfo.phone && <a href={`tel:${businessInfo.phone}`} style={{ color: headerFooterTextColor }} className="hover:opacity-80 text-sm">{businessInfo.phone}</a>}
+              {businessInfo.email && <a href={`mailto:${businessInfo.email}`} style={{ color: headerFooterTextColor }} className="hover:opacity-80 text-sm">{businessInfo.email}</a>}
             </div>
           </div>
         </div>
       )}
 
       {/* Spacer for fixed Top Bar - only if Top Bar is visible */}
-      {businessInfo.name && <div className="h-10"></div>}
+      {/* {businessInfo.name && <div className="h-10"></div>} */}
 
       {/* Hero Section - Uses hero, businessInfo */}
       {hero.title && (
@@ -129,7 +153,11 @@ export default function HomeClient({ siteData }) {
                 <h1 style={{ color: 'white' }} className="text-4xl md:text-5xl font-bold mb-4">{hero.title}</h1>
                 {hero.subtitle && <p style={{ color: 'white' }} className="text-lg md:text-xl mb-8">{hero.subtitle}</p>}
                 {businessInfo.phone && (
-                  <a href={`tel:${businessInfo.phone}`} className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors duration-300">
+                  <a 
+                    href={`tel:${businessInfo.phone}`}
+                    style={{ backgroundColor: primaryColor, color: buttonTextColor }}
+                    className="inline-block px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300"
+                  >
                     Call Now
                   </a>
                 )}
@@ -178,7 +206,8 @@ export default function HomeClient({ siteData }) {
                     <div className="flex justify-center">
                       <button
                         type="submit"
-                        className="w-full mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                        style={{ backgroundColor: primaryColor, color: buttonTextColor }}
+                        className="w-full mt-6 px-6 py-3 rounded-lg hover:opacity-80 transition-opacity duration-300 disabled:opacity-50"
                         disabled={isSubmitting} // Disable button while submitting
                       >
                         {isSubmitting ? 'Sending...' : 'Send Message'}
@@ -294,14 +323,18 @@ export default function HomeClient({ siteData }) {
           {primaryCtaImageUrl && (
             <div className="absolute inset-0">
               <Image src={primaryCtaImageUrl} alt={primaryCta.backgroundImage?.alt || primaryCta.title || 'CTA Background'} fill className="object-cover" />
-              <div className="absolute inset-0 bg-blue-600 bg-opacity-90"></div>
+              <div style={{ backgroundColor: hexToRgba(secondaryColor, 0.9) }} className="absolute inset-0"></div>
             </div>
           )}
           <div className="container mx-auto px-4 text-center relative z-10 text-white">
             <h2 className="text-3xl font-bold mb-4">{primaryCta.title}</h2>
             {primaryCta.subtitle && <p className="mb-8">{primaryCta.subtitle}</p>}
             {primaryCta.buttonText && (
-              <button onClick={scrollToTop} className="bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:bg-blue-50 transition-colors duration-300">
+              <button 
+                onClick={scrollToTop} 
+                style={{ backgroundColor: primaryColor, color: buttonTextColor }}
+                className="px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300"
+              >
                 {primaryCta.buttonText}
               </button>
             )}
@@ -348,7 +381,11 @@ export default function HomeClient({ siteData }) {
             <h2 className="text-3xl font-bold mb-4">{secondaryCta.title}</h2>
             {secondaryCta.subtitle && <p className="mb-8">{secondaryCta.subtitle}</p>}
             {secondaryCta.buttonText && (
-              <button onClick={scrollToTop} className="bg-white text-gray-900 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors duration-300">
+              <button 
+                onClick={scrollToTop} 
+                style={{ backgroundColor: primaryColor, color: buttonTextColor }}
+                className="px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300"
+              >
                 {secondaryCta.buttonText}
               </button>
             )}
@@ -364,12 +401,16 @@ export default function HomeClient({ siteData }) {
               <div className="bg-white p-8 rounded-lg shadow-lg">
                 <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
                 <div className="space-y-4">
-                  {businessInfo.phone && <p><strong>Phone:</strong> <a href={`tel:${businessInfo.phone}`} className="text-blue-600 hover:underline">{businessInfo.phone}</a></p>}
-                  {businessInfo.email && <p><strong>Email:</strong> <a href={`mailto:${businessInfo.email}`} className="text-blue-600 hover:underline">{businessInfo.email}</a></p>}
+                  {businessInfo.phone && <p><strong>Phone:</strong> <a href={`tel:${businessInfo.phone}`} style={{ color: headerFooterTextColor }} className="hover:underline">{businessInfo.phone}</a></p>}
+                  {businessInfo.email && <p><strong>Email:</strong> <a href={`mailto:${businessInfo.email}`} style={{ color: headerFooterTextColor }} className="hover:underline">{businessInfo.email}</a></p>}
                   {businessInfo.address && <p><strong>Address:</strong> {businessInfo.address}</p>}
                   {businessInfo.hoursOfOperation && <p><strong>Hours:</strong> <span className="whitespace-pre-line">{businessInfo.hoursOfOperation}</span></p>}
                 </div>
-                <button onClick={scrollToTop} className="mt-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-lg font-bold hover:from-blue-700 hover:to-blue-800 transition-all duration-300">
+                <button 
+                  onClick={scrollToTop} 
+                  style={{ backgroundColor: primaryColor, color: buttonTextColor }}
+                  className="mt-6 px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300"
+                >
                   Contact Us Form
                 </button>
               </div>
@@ -385,15 +426,15 @@ export default function HomeClient({ siteData }) {
 
       {/* Footer - uses businessInfo */}
       {(businessInfo.name || businessInfo.phone || businessInfo.email || businessInfo.address) && (
-        <footer className="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-8">
+        <footer style={{ backgroundColor: secondaryColor, color: headerFooterTextColor }} className="py-8">
           <div className="container mx-auto px-4 text-center">
-            {businessInfo.name && <h3 className="text-xl font-bold mb-4">{businessInfo.name}</h3>}
-            {businessInfo.address && <p className="mb-2 text-gray-400">{businessInfo.address}</p>}
+            {businessInfo.name && <h3 style={{ color: headerFooterTextColor }} className="text-xl font-bold mb-4">{businessInfo.name}</h3>}
+            {businessInfo.address && <p style={{ color: headerFooterTextColor }} className="mb-2 opacity-80">{businessInfo.address}</p>}
             <div className="flex justify-center space-x-4 mb-4">
-              {businessInfo.phone && <a href={`tel:${businessInfo.phone}`} className="hover:text-blue-300">{businessInfo.phone}</a>}
-              {businessInfo.email && <a href={`mailto:${businessInfo.email}`} className="hover:text-blue-300">{businessInfo.email}</a>}
+              {businessInfo.phone && <a href={`tel:${businessInfo.phone}`} style={{ color: headerFooterTextColor }} className="hover:opacity-80">{businessInfo.phone}</a>}
+              {businessInfo.email && <a href={`mailto:${businessInfo.email}`} style={{ color: headerFooterTextColor }} className="hover:opacity-80">{businessInfo.email}</a>}
             </div>
-            <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} {businessInfo.name || 'Your Company'}. All rights reserved.</p>
+            <p style={{ color: headerFooterTextColor }} className="text-sm opacity-70">&copy; {new Date().getFullYear()} {businessInfo.name || 'Your Company'}. All rights reserved.</p>
           </div>
         </footer>
       )}

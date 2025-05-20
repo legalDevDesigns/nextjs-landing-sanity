@@ -112,7 +112,13 @@ async function getData() {
       map {
         location,
         embedUrl
-      }
+      },
+      // Color Palette
+      useDefaultTheme,
+      "primaryColorValue": primaryColor.hex,
+      "secondaryColorValue": secondaryColor.hex,
+      buttonTextColorChoice,
+      headerFooterTextColorChoice
     }
   `;
 

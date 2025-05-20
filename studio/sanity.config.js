@@ -4,6 +4,7 @@ import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
 import {structure} from './deskStructure'
 import {iconPicker} from 'sanity-plugin-icon-picker'
+import {colorInput} from '@sanity/color-input'
 
 export default defineConfig({
   name: 'default',
@@ -17,7 +18,8 @@ export default defineConfig({
       structure
     }), 
     visionTool(),
-    iconPicker()
+    iconPicker(),
+    colorInput()
   ],
 
   schema: {
