@@ -1,6 +1,8 @@
 import { client } from './sanity/lib/client';
 import { groq } from 'next-sanity';
 import HomeClient from './HomeClient'; // We'll move the client logic here
+// Import urlFor if you need it for seoImage in generateMetadata
+import { urlFor } from './sanity/lib/client'; // Or wherever it's defined
 
 // Fetch data from Sanity based on the new schema
 async function getData() {
@@ -120,13 +122,45 @@ async function getData() {
   if (!data) {
     console.error(`Landing page with ID ${landingPageId} not found.`);
     // Return a default structure or handle the error appropriately
-    return { title: 'Page Not Found' }; 
+    return { title: 'Page Not Found', seoTitle: 'Page Not Found', seoDescription: 'This page could not be found.' }; 
   }
   
-  console.log('Fetched Data:', JSON.stringify(data, null, 2)); // Keep this uncommented for now
-  console.log('Successfully fetched data for:', data.title);
+  console.log('Fetched Data for generateMetadata:', data.seoTitle); // Specific log for metadata
   return data;
 }
+
+// Dynamically generate metadata
+export async function generateMetadata() {
+  const siteData = await getData();
+
+  // Prepare Open Graph images, checking if seoImage and asset exist
+  const openGraphImages = [];
+  if (siteData.seoImage && siteData.seoImage.asset) {
+    // Assuming urlFor is available in this scope. If not, it needs to be imported.
+    // You might need to import { urlFor } from './sanity/lib/client' or './sanity/lib/image'
+    // For now, let's assume a helper function or direct URL generation for simplicity if urlFor isn't easily available here.
+    // This part might need adjustment based on how urlFor is structured and imported.
+    // For a robust solution, ensure urlFor is imported and used correctly.
+    // As a placeholder if urlFor is not directly usable or to avoid breaking the build:
+    // openGraphImages.push({ url: 'path_to_your_default_image.jpg' }); // Fallback or ensure urlFor is correctly used
+     // If you have urlFor imported:
+     openGraphImages.push({ url: urlFor(siteData.seoImage.asset).width(1200).height(630).url(), alt: siteData.seoImage.alt || siteData.seoTitle });
+  }
+
+
+  return {
+    title: siteData.seoTitle || siteData.title || 'Your Business Name', // Fallback to internal title or a generic name
+    description: siteData.seoDescription || 'Welcome to our page.', // Fallback description
+    openGraph: {
+      title: siteData.seoTitle || siteData.title || 'Your Business Name',
+      description: siteData.seoDescription || 'Welcome to our page.',
+      images: openGraphImages.length > 0 ? openGraphImages : [{ url: '/images/1hero.jpg' }], // Fallback OG image
+      // Add other OG tags as needed
+    },
+    // Add other metadata fields like twitter, robots etc. if needed
+  };
+}
+
 
 export default async function Home() {
   const siteData = await getData();
