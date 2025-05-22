@@ -96,16 +96,18 @@ async function getData() {
       // Flexible Content
       extraContentSection,
       // CTAs
-      primaryCta {
-        title,
-        subtitle,
+      ctaBlock1 {
+        heading,
+        subheading,
         buttonText,
+        buttonAction,
         backgroundImage { alt, asset-> }
       },
-      secondaryCta {
-        title,
-        subtitle,
+      ctaBlock2 {
+        heading,
+        subheading,
         buttonText,
+        buttonAction,
         backgroundImage { alt, asset-> }
       },
       // Map Section

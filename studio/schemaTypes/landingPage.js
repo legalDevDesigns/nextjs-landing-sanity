@@ -52,8 +52,18 @@ export default defineType({
       name: 'primaryColor',
       title: 'Button Color',
       type: 'color',
+      options: { disableAlpha: true },
       group: 'theme',
       description: 'Select the primary color for the website theme (e.g., for buttons).',
+      hidden: ({document}) => document?.useDefaultTheme === true,
+    }),
+    defineField({
+      name: 'secondaryColor',
+      title: 'Header Color',
+      type: 'color',
+      options: { disableAlpha: true },
+      group: 'theme',
+      description: 'Select the secondary color for the website theme (e.g., for the header).',
       hidden: ({document}) => document?.useDefaultTheme === true,
     }),
     defineField({
@@ -70,14 +80,6 @@ export default defineType({
       },
       initialValue: 'light',
       description: 'Choose light or dark text for elements using the Button Color.',
-      hidden: ({document}) => document?.useDefaultTheme === true,
-    }),
-    defineField({
-      name: 'secondaryColor',
-      title: 'Header Color',
-      type: 'color',
-      group: 'theme',
-      description: 'Select the secondary color for the website theme (e.g., for the header).',
       hidden: ({document}) => document?.useDefaultTheme === true,
     }),
     defineField({
@@ -323,34 +325,64 @@ export default defineType({
       description: 'Flexible area for additional page-specific content.',
     }),
 
-
-    // --- CTA Sections (Page Content Group) ---
+    // --- Call to Action Block 1 (Page Content Group) ---
     defineField({
-      name: 'primaryCta',
-      title: 'Primary CTA Section',
+      name: 'ctaBlock1',
+      title: 'Call to Action Block 1',
       type: 'object',
       group: 'content',
-      options: { collapsible: true, collapsed: true },
+      options: {collapsible: true, collapsed: true},
       fields: [
-        {name: 'title', title: 'Title', type: 'string'},
-        {name: 'subtitle', title: 'Subtitle', type: 'text'},
-        {name: 'buttonText', title: 'Button Text', type: 'string'},
+        {name: 'heading', title: 'Heading', type: 'string'},
+        {name: 'subheading', title: 'Subheading', type: 'text'},
+        {name: 'buttonText', title: 'Button Text', type: 'string', initialValue: 'Get Started'},
+        {
+          name: 'buttonAction',
+          title: 'Button Action',
+          type: 'string',
+          options: {
+            list: [
+              {title: 'Link to Form', value: 'form'},
+              {title: 'Link to Phone Number', value: 'phone'},
+            ],
+            layout: 'radio',
+          },
+          initialValue: 'form',
+        },
         {name: 'backgroundImage', title: 'Background Image', type: 'image', options: {hotspot: true}},
       ],
     }),
-     defineField({
-      name: 'secondaryCta',
-      title: 'Secondary CTA Section',
+
+    // --- Call to Action Block 2 (Page Content Group) ---
+    defineField({
+      name: 'ctaBlock2',
+      title: 'Call to Action Block 2',
       type: 'object',
       group: 'content',
-      options: { collapsible: true, collapsed: true },
+      options: {collapsible: true, collapsed: true},
       fields: [
-        {name: 'title', title: 'Title', type: 'string'},
-        {name: 'subtitle', title: 'Subtitle', type: 'text'},
-        {name: 'buttonText', title: 'Button Text', type: 'string'},
+        {name: 'heading', title: 'Heading', type: 'string'},
+        {name: 'subheading', title: 'Subheading', type: 'text'},
+        {name: 'buttonText', title: 'Button Text', type: 'string', initialValue: 'Learn More'},
+        {
+          name: 'buttonAction',
+          title: 'Button Action',
+          type: 'string',
+          options: {
+            list: [
+              {title: 'Link to Form', value: 'form'},
+              {title: 'Link to Phone Number', value: 'phone'},
+            ],
+            layout: 'radio',
+          },
+          initialValue: 'phone',
+        },
         {name: 'backgroundImage', title: 'Background Image', type: 'image', options: {hotspot: true}},
       ],
     }),
+
+    // --- Footer (Page Content Group) ---
+    // ... existing code ...
 
     // --- Map Section (Page Content Group) ---
      defineField({

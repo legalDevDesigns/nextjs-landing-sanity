@@ -85,8 +85,8 @@ export default function HomeClient({ siteData }) {
   const about = safeSiteData.about || {};
   const testimonials = safeSiteData.testimonials || [];
   const extraContentSection = safeSiteData.extraContentSection || [];
-  const primaryCta = safeSiteData.primaryCta || {};
-  const secondaryCta = safeSiteData.secondaryCta || {};
+  const ctaBlock1 = safeSiteData.ctaBlock1 || {};
+  const ctaBlock2 = safeSiteData.ctaBlock2 || {};
   const map = safeSiteData.map || {};
 
   // Define default theme colors
@@ -107,8 +107,8 @@ export default function HomeClient({ siteData }) {
   // Pre-build image URLs - Pass the .asset object to urlFor
   const heroImageUrl = urlFor(hero.backgroundImage?.asset)?.url();
   const aboutImageUrl = urlFor(about.image?.asset)?.url();
-  const primaryCtaImageUrl = primaryCta?.backgroundImage ? urlFor(primaryCta.backgroundImage?.asset)?.url() : null;
-  const secondaryCtaImageUrl = secondaryCta?.backgroundImage ? urlFor(secondaryCta.backgroundImage?.asset)?.url() : null;
+  const ctaBlock1ImageUrl = ctaBlock1?.backgroundImage ? urlFor(ctaBlock1.backgroundImage?.asset)?.url() : null;
+  const ctaBlock2ImageUrl = ctaBlock2?.backgroundImage ? urlFor(ctaBlock2.backgroundImage?.asset)?.url() : null;
 
   return (
     <main className="min-h-screen">
@@ -129,7 +129,6 @@ export default function HomeClient({ siteData }) {
             <span className="font-bold">{businessInfo.name}</span>
             <div className="flex space-x-4">
               {businessInfo.phone && <a href={`tel:${businessInfo.phone}`} style={{ color: headerFooterTextColor }} className="hover:opacity-80 text-sm">{businessInfo.phone}</a>}
-              {businessInfo.email && <a href={`mailto:${businessInfo.email}`} style={{ color: headerFooterTextColor }} className="hover:opacity-80 text-sm">{businessInfo.email}</a>}
             </div>
           </div>
         </div>
@@ -165,6 +164,7 @@ export default function HomeClient({ siteData }) {
               {hero.formTitle && (
                 <div className="flex justify-center md:justify-end">
                   <form
+                    id="contact-form"
                     name="contact"
                     method="POST"
                     onSubmit={handleFormSubmit} // Add onSubmit handler
@@ -317,26 +317,53 @@ export default function HomeClient({ siteData }) {
         </section>
       )}
 
-      {/* Primary CTA Block - uses primaryCta */}
-      {primaryCta.title && (
-        <section className="py-16 relative overflow-hidden">
-          {primaryCtaImageUrl && (
-            <div className="absolute inset-0">
-              <Image src={primaryCtaImageUrl} alt={primaryCta.backgroundImage?.alt || primaryCta.title || 'CTA Background'} fill className="object-cover" />
-              <div style={{ backgroundColor: hexToRgba(secondaryColor, 0.9) }} className="absolute inset-0"></div>
+      {/* CTA Block 1 - uses ctaBlock1 */}
+      {ctaBlock1.heading && (
+        <section className="py-16 relative overflow-hidden bg-gray-800 text-white">
+          {ctaBlock1ImageUrl && (
+            <div className="absolute inset-0 z-0">
+              <Image src={ctaBlock1ImageUrl} alt={ctaBlock1.backgroundImage?.alt || ctaBlock1.heading || 'CTA Background 1'} fill className="object-cover" />
+              <div style={{ backgroundColor: hexToRgba(secondaryColor, 0.8) }} className="absolute inset-0"></div>
             </div>
           )}
-          <div className="container mx-auto px-4 text-center relative z-10 text-white">
-            <h2 className="text-3xl font-bold mb-4">{primaryCta.title}</h2>
-            {primaryCta.subtitle && <p className="mb-8">{primaryCta.subtitle}</p>}
-            {primaryCta.buttonText && (
-              <button 
-                onClick={scrollToTop} 
+          <div className="container mx-auto px-4 text-center relative z-10">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{ctaBlock1.heading}</h2>
+            {ctaBlock1.subheading && <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">{ctaBlock1.subheading}</p>}
+            {ctaBlock1.buttonText && (
+              <a
+                href={ctaBlock1.buttonAction === 'form' ? '#contact-form' : (ctaBlock1.buttonAction === 'phone' && businessInfo.phone ? `tel:${businessInfo.phone}` : '#')}
+                onClick={ctaBlock1.buttonAction === 'form' ? (e) => { e.preventDefault(); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' }); } : undefined}
                 style={{ backgroundColor: primaryColor, color: buttonTextColor }}
-                className="px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300"
+                className="px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300 text-lg"
               >
-                {primaryCta.buttonText}
-              </button>
+                {ctaBlock1.buttonText}
+              </a>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* CTA Block 2 - uses ctaBlock2 */}
+      {ctaBlock2.heading && (
+        <section className="py-16 relative overflow-hidden bg-gray-700 text-white">
+          {ctaBlock2ImageUrl && (
+            <div className="absolute inset-0 z-0">
+              <Image src={ctaBlock2ImageUrl} alt={ctaBlock2.backgroundImage?.alt || ctaBlock2.heading || 'CTA Background 2'} fill className="object-cover" />
+              <div style={{ backgroundColor: hexToRgba(primaryColor, 0.8) }} className="absolute inset-0"></div>
+            </div>
+          )}
+          <div className="container mx-auto px-4 text-center relative z-10">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{ctaBlock2.heading}</h2>
+            {ctaBlock2.subheading && <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">{ctaBlock2.subheading}</p>}
+            {ctaBlock2.buttonText && (
+              <a
+                href={ctaBlock2.buttonAction === 'form' ? '#contact-form' : (ctaBlock2.buttonAction === 'phone' && businessInfo.phone ? `tel:${businessInfo.phone}` : '#')}
+                onClick={ctaBlock2.buttonAction === 'form' ? (e) => { e.preventDefault(); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' }); } : undefined}
+                style={{ backgroundColor: secondaryColor, color: buttonTextColor }}
+                className="px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300 text-lg"
+              >
+                {ctaBlock2.buttonText}
+              </a>
             )}
           </div>
         </section>
@@ -368,31 +395,6 @@ export default function HomeClient({ siteData }) {
         </section>
       )}
 
-      {/* Secondary Parallax CTA - uses secondaryCta */}
-      {secondaryCta.title && (
-        <section className="py-16 relative overflow-hidden">
-          {secondaryCtaImageUrl && (
-            <div className="absolute inset-0">
-              <Image src={secondaryCtaImageUrl} alt={secondaryCta.backgroundImage?.alt || secondaryCta.title || 'Secondary CTA Background'} fill className="object-cover" />
-              <div className="absolute inset-0 bg-black bg-opacity-70"></div>
-            </div>
-          )}
-          <div className="container mx-auto px-4 text-center relative z-10 text-white">
-            <h2 className="text-3xl font-bold mb-4">{secondaryCta.title}</h2>
-            {secondaryCta.subtitle && <p className="mb-8">{secondaryCta.subtitle}</p>}
-            {secondaryCta.buttonText && (
-              <button 
-                onClick={scrollToTop} 
-                style={{ backgroundColor: primaryColor, color: buttonTextColor }}
-                className="px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300"
-              >
-                {secondaryCta.buttonText}
-              </button>
-            )}
-          </div>
-        </section>
-      )}
-
       {/* Contact Section - uses businessInfo, map */}
       {(businessInfo.phone || businessInfo.email || businessInfo.address || map?.embedUrl) && (
         <section className="py-16 bg-gradient-to-br from-white to-gray-50">
@@ -401,8 +403,8 @@ export default function HomeClient({ siteData }) {
               <div className="bg-white p-8 rounded-lg shadow-lg">
                 <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
                 <div className="space-y-4">
-                  {businessInfo.phone && <p><strong>Phone:</strong> <a href={`tel:${businessInfo.phone}`} style={{ color: headerFooterTextColor }} className="hover:underline">{businessInfo.phone}</a></p>}
-                  {businessInfo.email && <p><strong>Email:</strong> <a href={`mailto:${businessInfo.email}`} style={{ color: headerFooterTextColor }} className="hover:underline">{businessInfo.email}</a></p>}
+                  {businessInfo.phone && <p><strong>Phone:</strong> <a href={`tel:${businessInfo.phone}`} style={{ color: useDefaultTheme ? TEXT_DARK : (safeSiteData.headerFooterTextColorChoice === 'light' ? TEXT_DARK : headerFooterTextColor) }} className="hover:underline">{businessInfo.phone}</a></p>}
+                  {businessInfo.email && <p><strong>Email:</strong> <a href={`mailto:${businessInfo.email}`} style={{ color: useDefaultTheme ? TEXT_DARK : (safeSiteData.headerFooterTextColorChoice === 'light' ? TEXT_DARK : headerFooterTextColor) }} className="hover:underline">{businessInfo.email}</a></p>}
                   {businessInfo.address && <p><strong>Address:</strong> {businessInfo.address}</p>}
                   {businessInfo.hoursOfOperation && <p><strong>Hours:</strong> <span className="whitespace-pre-line">{businessInfo.hoursOfOperation}</span></p>}
                 </div>
