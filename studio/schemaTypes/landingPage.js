@@ -238,24 +238,6 @@ export default defineType({
       ],
       validation: Rule => Rule.max(3).warning('Recommended maximum 3 main features')
     }),
-    defineField({
-      name: 'secondaryFeatures',
-      title: 'Secondary Features / Benefits',
-      type: 'array',
-      group: 'content',
-      description: 'Add secondary features. Choose \'Feature Item\' for unique content or \'Reusable Feature Card\' to use one from the library.',
-      of: [
-        { 
-          title: 'Feature Item',
-          type: 'featureItem' // Reference the inline object schema
-        },
-        {
-          title: 'Reusable Feature Card',
-          type: 'reference',
-          to: [{type: 'featureCard'}] // Reference the separate document type
-        }
-      ],
-    }),
 
     // --- About Section (Page Content Group) ---
     defineField({
@@ -350,6 +332,25 @@ export default defineType({
           initialValue: 'form',
         },
         {name: 'backgroundImage', title: 'Background Image', type: 'image', options: {hotspot: true}},
+      ],
+    }),
+
+    defineField({
+      name: 'secondaryFeatures',
+      title: 'Secondary Features / Benefits',
+      type: 'array',
+      group: 'content',
+      description: 'Add secondary features. Choose \'Feature Item\' for unique content or \'Reusable Feature Card\' to use one from the library.',
+      of: [
+        { 
+          title: 'Feature Item',
+          type: 'featureItem' // Reference the inline object schema
+        },
+        {
+          title: 'Reusable Feature Card',
+          type: 'reference',
+          to: [{type: 'featureCard'}] // Reference the separate document type
+        }
       ],
     }),
 
