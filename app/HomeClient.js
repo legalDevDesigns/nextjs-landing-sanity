@@ -60,6 +60,24 @@ export default function HomeClient({ siteData }) {
     return null;
   };
 
+  // Define RenderFeatureCard component here
+  const RenderFeatureCard = ({ feature, cardKey, className = '' }) => {
+    const featureImageUrl = urlFor(feature.image?.asset)?.url();
+    // renderIcon is available in this scope as it's part of HomeClient
+    return (
+      <div key={cardKey} className={`group bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col ${className}`}>
+        {featureImageUrl && (
+          <div className="relative h-48 mb-4 rounded overflow-hidden">
+            <Image src={featureImageUrl} alt={feature.image?.alt || feature.title || 'Feature image'} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+          </div>
+        )}
+        {renderIcon(feature)}
+        {feature.title && <h3 className="text-xl font-bold mb-2">{feature.title}</h3>}
+        {feature.description && <p className="text-gray-600">{feature.description}</p>}
+      </div>
+    );
+  };
+
   // Helper to handle Netlify form submission
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -252,35 +270,53 @@ export default function HomeClient({ siteData }) {
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className={getFeatureGridClass(mainFeatures.length)}>
-              {mainFeatures.map((feature, index) => {
-                // Pass feature.image.asset to urlFor
-                const featureImageUrl = urlFor(feature.image?.asset)?.url();
-                const key = feature._key || feature._id;
-                let cardClassName = "group bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300";
-                const count = mainFeatures.length;
-
-                if (count === 7 && index === 6) {
-                  // Apply centering for the last card out of 7 (on md:grid-cols-3)
-                  cardClassName += " md:col-start-2";
-                } else if (count === 5 && index === 3) {
-                  // For 5 items (3 on top, 2 below): start the 4th item (index 3) in the second column
-                  // This makes the pair [item3, item4] appear as [ ][item3][item4] on md:grid-cols-3
-                  cardClassName += " md:col-start-2";
-                }
-
-                return (
-                  <div key={key} className={cardClassName}>
-                    {featureImageUrl && (
-                      <div className="relative h-48 mb-4 rounded overflow-hidden">
-                        <Image src={featureImageUrl} alt={feature.image?.alt || feature.title || 'Feature image'} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+              {mainFeatures.length === 5 ? (
+                <>
+                  {mainFeatures.slice(0, 3).map((feature) => (
+                    <RenderFeatureCard
+                      feature={feature}
+                      cardKey={feature._key || feature._id}
+                      key={feature._key || feature._id}
+                    />
+                  ))}
+                  <div className="md:col-span-3 flex justify-center pt-8"> {/* pt-8 for vertical gap if needed */}
+                    <div className="flex flex-col sm:flex-row gap-8 w-full items-stretch sm:justify-center">
+                      <div className="w-full sm:w-1/2 md:max-w-md lg:max-w-lg">
+                        <RenderFeatureCard
+                          feature={mainFeatures[3]}
+                          cardKey={mainFeatures[3]._key || mainFeatures[3]._id}
+                          key={mainFeatures[3]._key || mainFeatures[3]._id}
+                        />
                       </div>
-                    )}
-                    {renderIcon(feature)}
-                    {feature.title && <h3 className="text-xl font-bold mb-2">{feature.title}</h3>}
-                    {feature.description && <p className="text-gray-600">{feature.description}</p>}
+                      <div className="w-full sm:w-1/2 md:max-w-md lg:max-w-lg">
+                        <RenderFeatureCard
+                          feature={mainFeatures[4]}
+                          cardKey={mainFeatures[4]._key || mainFeatures[4]._id}
+                          key={mainFeatures[4]._key || mainFeatures[4]._id}
+                        />
+                      </div>
+                    </div>
                   </div>
-                );
-              })}
+                </>
+              ) : (
+                mainFeatures.map((feature, index) => {
+                  let cardSpecificClass = "";
+                  const count = mainFeatures.length;
+                  if (count === 7 && index === 6) {
+                    cardSpecificClass = "md:col-start-2";
+                  }
+                  // For count = 4, getFeatureGridClass sets md:grid-cols-2, handled by parent.
+                  // Default cases fall through to RenderFeatureCard without specific offset/sizing classes.
+                  return (
+                    <RenderFeatureCard
+                      feature={feature}
+                      cardKey={feature._key || feature._id}
+                      className={cardSpecificClass}
+                      key={feature._key || feature._id}
+                    />
+                  );
+                })
+              )}
             </div>
           </div>
         </section>
@@ -379,34 +415,53 @@ export default function HomeClient({ siteData }) {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className={getFeatureGridClass(secondaryFeatures.length)}>
-              {secondaryFeatures.map((feature, index) => {
-                const featureImageUrl = urlFor(feature.image?.asset)?.url();
-                const key = feature._key || feature._id;
-                let cardClassName = "group bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300";
-                const count = secondaryFeatures.length;
-
-                if (count === 7 && index === 6) {
-                  // Apply centering for the last card out of 7 (on md:grid-cols-3)
-                  cardClassName += " md:col-start-2";
-                } else if (count === 5 && index === 3) {
-                  // For 5 items (3 on top, 2 below): start the 4th item (index 3) in the second column
-                  // This makes the pair [item3, item4] appear as [ ][item3][item4] on md:grid-cols-3
-                  cardClassName += " md:col-start-2";
-                }
-
-                return (
-                  <div key={key} className={cardClassName}>
-                    {featureImageUrl && (
-                      <div className="relative h-48 mb-4 rounded overflow-hidden">
-                        <Image src={featureImageUrl} alt={feature.image?.alt || feature.title || 'Feature image'} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+              {secondaryFeatures.length === 5 ? (
+                <>
+                  {secondaryFeatures.slice(0, 3).map((feature) => (
+                    <RenderFeatureCard
+                      feature={feature}
+                      cardKey={feature._key || feature._id}
+                      key={feature._key || feature._id}
+                    />
+                  ))}
+                  <div className="md:col-span-3 flex justify-center pt-8"> {/* pt-8 for vertical gap if needed */}
+                    <div className="flex flex-col sm:flex-row gap-8 w-full items-stretch sm:justify-center">
+                      <div className="w-full sm:w-1/2 md:max-w-md lg:max-w-lg">
+                        <RenderFeatureCard
+                          feature={secondaryFeatures[3]}
+                          cardKey={secondaryFeatures[3]._key || secondaryFeatures[3]._id}
+                          key={secondaryFeatures[3]._key || secondaryFeatures[3]._id}
+                        />
                       </div>
-                    )}
-                    {renderIcon(feature)}
-                    {feature.title && <h3 className="text-xl font-bold mb-2">{feature.title}</h3>}
-                    {feature.description && <p className="text-gray-600">{feature.description}</p>}
+                      <div className="w-full sm:w-1/2 md:max-w-md lg:max-w-lg">
+                        <RenderFeatureCard
+                          feature={secondaryFeatures[4]}
+                          cardKey={secondaryFeatures[4]._key || secondaryFeatures[4]._id}
+                          key={secondaryFeatures[4]._key || secondaryFeatures[4]._id}
+                        />
+                      </div>
+                    </div>
                   </div>
-                );
-              })}
+                </>
+              ) : (
+                secondaryFeatures.map((feature, index) => {
+                  let cardSpecificClass = "";
+                  const count = secondaryFeatures.length;
+                  if (count === 7 && index === 6) {
+                    cardSpecificClass = "md:col-start-2";
+                  }
+                  // For count = 4, getFeatureGridClass sets md:grid-cols-2, handled by parent.
+                  // Default cases fall through to RenderFeatureCard without specific offset/sizing classes.
+                  return (
+                    <RenderFeatureCard
+                      feature={feature}
+                      cardKey={feature._key || feature._id}
+                      className={cardSpecificClass}
+                      key={feature._key || feature._id}
+                    />
+                  );
+                })
+              )}
             </div>
           </div>
         </section>
