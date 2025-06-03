@@ -5,6 +5,25 @@ import Image from 'next/image';
 import { PortableText } from '@portabletext/react';
 import { urlFor } from './sanity/lib/client';
 
+// Helper function to determine grid classes based on feature count
+const getFeatureGridClass = (count) => {
+  if (count === 4) {
+    return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-8';
+  }
+  if (count === 5) {
+    // For 5 items, this will be 3 on top, 2 on bottom (left-aligned).
+    // True centering of the bottom 2 is more complex with pure Tailwind grid.
+    return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8';
+  }
+  if (count === 7) {
+    // For 7 items, this will be 3, 3, 1 (last one left-aligned by default).
+    // We'll add specific styling to the last item to center it.
+    return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8';
+  }
+  // Default for 1, 2, 3, 6, etc.
+  return 'grid grid-cols-1 md:grid-cols-3 gap-8';
+};
+
 // Helper function to convert hex to RGBA
 const hexToRgba = (hex, alpha = 1) => {
   if (!hex || typeof hex !== 'string') return null; // Return null or a default if hex is invalid
@@ -232,13 +251,25 @@ export default function HomeClient({ siteData }) {
       {mainFeatures.length > 0 && (
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {mainFeatures.map((feature) => {
+            <div className={getFeatureGridClass(mainFeatures.length)}>
+              {mainFeatures.map((feature, index) => {
                 // Pass feature.image.asset to urlFor
                 const featureImageUrl = urlFor(feature.image?.asset)?.url();
                 const key = feature._key || feature._id;
+                let cardClassName = "group bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300";
+                const count = mainFeatures.length;
+
+                if (count === 7 && index === 6) {
+                  // Apply centering for the last card out of 7 (on md:grid-cols-3)
+                  cardClassName += " md:col-start-2";
+                } else if (count === 5 && index === 3) {
+                  // For 5 items (3 on top, 2 below): start the 4th item (index 3) in the second column
+                  // This makes the pair [item3, item4] appear as [ ][item3][item4] on md:grid-cols-3
+                  cardClassName += " md:col-start-2";
+                }
+
                 return (
-                  <div key={key} className="group bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300">
+                  <div key={key} className={cardClassName}>
                     {featureImageUrl && (
                       <div className="relative h-48 mb-4 rounded overflow-hidden">
                         <Image src={featureImageUrl} alt={feature.image?.alt || feature.title || 'Feature image'} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -347,12 +378,24 @@ export default function HomeClient({ siteData }) {
       {secondaryFeatures.length > 0 && (
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {secondaryFeatures.map((feature) => {
+            <div className={getFeatureGridClass(secondaryFeatures.length)}>
+              {secondaryFeatures.map((feature, index) => {
                 const featureImageUrl = urlFor(feature.image?.asset)?.url();
                 const key = feature._key || feature._id;
+                let cardClassName = "group bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300";
+                const count = secondaryFeatures.length;
+
+                if (count === 7 && index === 6) {
+                  // Apply centering for the last card out of 7 (on md:grid-cols-3)
+                  cardClassName += " md:col-start-2";
+                } else if (count === 5 && index === 3) {
+                  // For 5 items (3 on top, 2 below): start the 4th item (index 3) in the second column
+                  // This makes the pair [item3, item4] appear as [ ][item3][item4] on md:grid-cols-3
+                  cardClassName += " md:col-start-2";
+                }
+
                 return (
-                  <div key={key} className="group bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300">
+                  <div key={key} className={cardClassName}>
                     {featureImageUrl && (
                       <div className="relative h-48 mb-4 rounded overflow-hidden">
                         <Image src={featureImageUrl} alt={feature.image?.alt || feature.title || 'Feature image'} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
