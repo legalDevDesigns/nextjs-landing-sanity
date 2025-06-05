@@ -17,7 +17,8 @@
     "next": "^15.2.4",
     "next-sanity": "^9.9.9",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sanity-plugin-icon-picker": "^4.0.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",

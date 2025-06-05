@@ -393,8 +393,30 @@ export default defineType({
       group: 'content',
       options: { collapsible: true, collapsed: true },
       fields: [
-        {name: 'location', title: 'Location Address (for display)', type: 'string', description: 'Optional: Display address text near map.'},
-        {name: 'embedUrl', title: 'Google Maps Embed URL', type: 'url', description: 'Paste the full embed URL from Google Maps share options.'},
+        defineField({
+          name: 'showMap',
+          title: 'Show Map Section',
+          type: 'boolean',
+          description: 'Toggle to show or hide the map section on the page.',
+          initialValue: true,
+        }),
+        defineField({
+          name: 'location', 
+          title: 'Location Address (for display)', 
+          type: 'string', 
+          description: 'Optional: Display address text near map.',
+          hidden: ({parent}) => !parent?.showMap,
+        }),
+        defineField({
+          name: 'embedUrl', 
+          title: 'Google Maps Embed URL', 
+          type: 'url', 
+          description: 'Paste the full embed URL from Google Maps share options.',
+          hidden: ({parent}) => !parent?.showMap,
+          validation: Rule => Rule.uri({
+            scheme: ['http', 'https']
+          })
+        }),
       ],
     }),
   ],

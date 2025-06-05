@@ -494,7 +494,7 @@ export default function HomeClient({ siteData }) {
       )}
 
       {/* Contact Section - uses businessInfo, map */}
-      {(businessInfo.phone || businessInfo.email || businessInfo.address || map?.embedUrl) && (
+      {(businessInfo.phone || businessInfo.email || businessInfo.address || (map?.showMap && map?.embedUrl)) && (
         <section className="py-16 bg-gradient-to-br from-white to-gray-50">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -514,7 +514,7 @@ export default function HomeClient({ siteData }) {
                   Contact Us Form
                 </button>
               </div>
-              {map?.embedUrl && (
+              {map?.showMap && map?.embedUrl && (
                 <div className="h-64 rounded-lg overflow-hidden shadow-lg">
                   <iframe src={map.embedUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full h-full"></iframe>
                 </div>
