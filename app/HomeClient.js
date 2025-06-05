@@ -494,7 +494,7 @@ export default function HomeClient({ siteData }) {
       )}
 
       {/* Contact Section - uses businessInfo, map */}
-      {(businessInfo.phone || businessInfo.email || businessInfo.address || (map?.showMap && map?.embedUrl)) && (
+      {(businessInfo.phone || businessInfo.email || businessInfo.address || (map?.embedUrl && map?.showMap !== false)) && (
         <section className="py-16 bg-gradient-to-br from-white to-gray-50">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -511,10 +511,10 @@ export default function HomeClient({ siteData }) {
                   style={{ backgroundColor: primaryColor, color: buttonTextColor }}
                   className="mt-6 px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300"
                 >
-                  Contact Us Form
+                  Contact Us
                 </button>
               </div>
-              {map?.showMap && map?.embedUrl && (
+              {map?.embedUrl && map?.showMap !== false && (
                 <div className="h-64 rounded-lg overflow-hidden shadow-lg">
                   <iframe src={map.embedUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full h-full"></iframe>
                 </div>
@@ -534,7 +534,7 @@ export default function HomeClient({ siteData }) {
               {businessInfo.phone && <a href={`tel:${businessInfo.phone}`} style={{ color: headerFooterTextColor }} className="hover:opacity-80">{businessInfo.phone}</a>}
               {businessInfo.email && <a href={`mailto:${businessInfo.email}`} style={{ color: headerFooterTextColor }} className="hover:opacity-80">{businessInfo.email}</a>}
             </div>
-            <p style={{ color: headerFooterTextColor }} className="text-sm opacity-70">&copy; {new Date().getFullYear()} {businessInfo.name || 'Your Company'}. All rights reserved.</p>
+            <p style={{ color: headerFooterTextColor }} className="text-sm opacity-70" suppressHydrationWarning>&copy; {new Date().getFullYear()} {businessInfo.name || 'Your Company'}. All rights reserved.</p>
           </div>
         </footer>
       )}
