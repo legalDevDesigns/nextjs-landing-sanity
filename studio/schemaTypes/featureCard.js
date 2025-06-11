@@ -14,7 +14,40 @@ export default {
     {
       name: 'description',
       title: 'Description',
-      type: 'text',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          // Keep styles simple for a feature description
+          styles: [
+            {title: 'Normal', value: 'normal'},
+            {title: 'H3', value: 'h3'},
+            {title: 'Quote', value: 'blockquote'},
+          ],
+          // Allow lists
+          lists: [
+            {title: 'Bullet', value: 'bullet'},
+            {title: 'Numbered', value: 'number'},
+          ],
+          // Allow basic marks
+          marks: {
+            decorators: [
+              {title: 'Strong', value: 'strong'},
+              {title: 'Emphasis', value: 'em'},
+              {title: 'Underline', value: 'underline'},
+            ],
+            // Allow links
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'URL',
+                fields: [{ name: 'href', type: 'url', title: 'URL', validation: Rule => Rule.uri({allowRelative: true}) }]
+              },
+            ]
+          }
+        },
+      ],
       validation: Rule => Rule.required()
     },
     {
