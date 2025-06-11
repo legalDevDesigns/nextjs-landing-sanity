@@ -73,7 +73,7 @@ export default function HomeClient({ siteData }) {
         )}
         {renderIcon(feature)}
         {feature.title && <h3 className="text-xl font-bold mb-2">{feature.title}</h3>}
-        {feature.description && <p className="text-gray-600">{feature.description}</p>}
+        {feature.description && <div className="text-gray-600 prose-sm"><PortableText value={feature.description} /></div>}
       </div>
     );
   };
