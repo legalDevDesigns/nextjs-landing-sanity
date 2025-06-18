@@ -67,7 +67,6 @@ export default defineType({
       options: {
         providers: ['fa', 'mdi', 'hi'],
         outputFormat: 'react',
-        storeSvg: true
       },
       hidden: ({ parent }) => parent?.iconType !== 'icon',
       validation: Rule => Rule.custom((value, context) => {

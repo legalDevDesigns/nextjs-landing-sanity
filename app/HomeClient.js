@@ -501,8 +501,8 @@ export default function HomeClient({ siteData }) {
               <div className="bg-white p-8 rounded-lg shadow-lg">
                 <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
                 <div className="space-y-4">
-                  {businessInfo.phone && <p><strong>Phone:</strong> <a href={`tel:${businessInfo.phone}`} style={{ color: useDefaultTheme ? TEXT_DARK : (safeSiteData.headerFooterTextColorChoice === 'light' ? TEXT_DARK : headerFooterTextColor) }} className="hover:underline">{businessInfo.phone}</a></p>}
-                  {businessInfo.email && <p><strong>Email:</strong> <a href={`mailto:${businessInfo.email}`} style={{ color: useDefaultTheme ? TEXT_DARK : (safeSiteData.headerFooterTextColorChoice === 'light' ? TEXT_DARK : headerFooterTextColor) }} className="hover:underline">{businessInfo.email}</a></p>}
+                  {businessInfo.phone && <p><strong>Phone:</strong> <a href={`tel:${businessInfo.phone}`} className="text-gray-800 hover:underline">{businessInfo.phone}</a></p>}
+                  {businessInfo.email && <p><strong>Email:</strong> <a href={`mailto:${businessInfo.email}`} className="text-gray-800 hover:underline">{businessInfo.email}</a></p>}
                   {businessInfo.address && <p><strong>Address:</strong> {businessInfo.address}</p>}
                   {businessInfo.hoursOfOperation && <p><strong>Hours:</strong> <span className="whitespace-pre-line">{businessInfo.hoursOfOperation}</span></p>}
                 </div>

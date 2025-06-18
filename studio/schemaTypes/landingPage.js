@@ -212,7 +212,7 @@ export default defineType({
       fields: [
         {name: 'title', title: 'Headline', type: 'string', validation: Rule => Rule.required()},
         {name: 'subtitle', title: 'Subtitle', type: 'text'},
-        {name: 'backgroundImage', title: 'Background Image', type: 'image', options: {hotspot: true}, validation: Rule => Rule.required()},
+        {name: 'backgroundImage', title: 'Background Image', type: 'image', options: {hotspot: true}},
         {name: 'formTitle', title: 'Form Title', type: 'string', description: "Optional title above the form in the hero."},
         // Removed formPlaceholder as form is complex
       ],
