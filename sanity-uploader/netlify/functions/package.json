@@ -1,0 +1,7 @@
+{
+  "name": "sanity-uploader-functions",
+  "version": "1.0.0",
+  "dependencies": {
+    "@sanity/client": "^6.15.0"
+  }
+} 
