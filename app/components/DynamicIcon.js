@@ -31,15 +31,15 @@ const DynamicIcon = ({ icon, className }) => {
       try {
         switch (providerPrefix) {
           case 'fa':
-            // Assuming Font Awesome 6, as it's the latest in react-icons v5+
-            library = await import('react-icons/fa6');
+            // Use Font Awesome 5 for broader compatibility with the picker
+            library = await import('react-icons/fa');
             break;
           case 'mdi':
             library = await import('react-icons/mdi');
             break;
           case 'hi':
-            // Assuming Heroicons 2
-            library = await import('react-icons/hi2');
+            // Use Heroicons v1 for broader compatibility
+            library = await import('react-icons/hi');
             break;
           default:
             console.warn(`Icon provider '${icon.provider}' is not supported.`);
