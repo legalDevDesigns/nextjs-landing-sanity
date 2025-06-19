@@ -13,37 +13,51 @@ const a = {
 // Fallback component while the icon is loading
 const IconFallback = () => <div className="w-8 h-8" />; // Placeholder with size
 
-const DynamicIcon = ({ icon }) => {
+const DynamicIcon = ({ icon, className }) => {
   const [IconComponent, setIconComponent] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
     const loadIcon = async () => {
       if (!icon || !icon.provider || !icon.name) {
+        if (isMounted) setIconComponent(null);
         return;
       }
-      
-      const providerPrefix = icon.provider.toLowerCase();
-      const libraryPath = a[providerPrefix];
 
-      if (!libraryPath) {
-        console.warn(`Icon provider '${icon.provider}' is not supported.`);
-        return;
-      }
-      
+      const providerPrefix = icon.provider.toLowerCase();
+      const iconName = icon.name;
+      let library;
+
       try {
-        const library = await import(/* @vite-ignore */ libraryPath);
-        const LoadedIcon = library[icon.name];
-        
+        switch (providerPrefix) {
+          case 'fa':
+            // Assuming Font Awesome 6, as it's the latest in react-icons v5+
+            library = await import('react-icons/fa6');
+            break;
+          case 'mdi':
+            library = await import('react-icons/mdi');
+            break;
+          case 'hi':
+            // Assuming Heroicons 2
+            library = await import('react-icons/hi2');
+            break;
+          default:
+            console.warn(`Icon provider '${icon.provider}' is not supported.`);
+            if (isMounted) setIconComponent(null);
+            return;
+        }
+
+        const LoadedIcon = library[iconName];
+
         if (LoadedIcon && isMounted) {
           setIconComponent(() => LoadedIcon);
-        } else if(isMounted) {
-          console.warn(`Icon '${icon.name}' not found in provider '${icon.provider}'.`);
+        } else if (isMounted) {
+          console.warn(`Icon '${iconName}' not found in provider '${providerPrefix}'.`);
           setIconComponent(null);
         }
       } catch (error) {
-        console.error(`Error loading icon library '${libraryPath}':`, error);
-        if(isMounted) setIconComponent(null);
+        console.error(`Error loading icon '${iconName}' from provider '${providerPrefix}':`, error);
+        if (isMounted) setIconComponent(null);
       }
     };
 
@@ -60,7 +74,7 @@ const DynamicIcon = ({ icon }) => {
 
   return (
     <Suspense fallback={<IconFallback />}>
-      <IconComponent />
+      <IconComponent className={className} />
     </Suspense>
   );
 };
