@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { PortableText } from '@portabletext/react';
 import { urlFor } from './sanity/lib/client';
+import DynamicIcon from './components/DynamicIcon';
 
 // Helper function to determine grid classes based on feature count
 const getFeatureGridClass = (count) => {
@@ -52,11 +53,11 @@ export default function HomeClient({ siteData }) {
   
   // Helper to render feature icons
   const renderIcon = (feature) => {
-    if (feature.iconType === 'icon' && feature.icon?.svg) {
-      return <div dangerouslySetInnerHTML={{ __html: feature.icon.svg }} className="text-4xl mb-4" />;
+    if (feature.iconType === 'icon' && feature.icon?.provider && feature.icon?.name) {
+      return <div className="text-4xl mb-4 text-gray-800"><DynamicIcon icon={feature.icon} /></div>;
     } else if (feature.iconType === 'custom' && feature.customIconClass) {
       return <i className={`${feature.customIconClass} text-4xl mb-4`}></i>;
-    } 
+    }
     return null;
   };
 
