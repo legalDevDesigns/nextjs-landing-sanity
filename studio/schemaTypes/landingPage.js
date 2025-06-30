@@ -150,6 +150,7 @@ export default defineType({
         group: 'seo',
         validation: Rule => Rule.max(160).warning('Best practice is under 160 characters')
      }),
+     /*
      defineField({
         name: 'seoImage',
         title: 'Social Share Image',
@@ -158,6 +159,7 @@ export default defineType({
         group: 'seo',
         options: { hotspot: true }
      }),
+     */
 
     // --- Business Info (RESTORED to Business Info Group) ---
     defineField({
@@ -249,7 +251,7 @@ export default defineType({
       fields: [
         {name: 'title', title: 'Title', type: 'string'},
         {name: 'description', title: 'Description', type: 'text'},
-        {name: 'image', title: 'Image', type: 'image', options: {hotspot: true}},
+        {name: 'image', title: 'Image (also for Social Sharing)', type: 'image', options: {hotspot: true}, description: 'Image for the About Us section. This is also used when sharing the page on social media (e.g., Facebook, Twitter). Recommended size: 1200x630px.'},
       ],
     }),
 
@@ -331,7 +333,6 @@ export default defineType({
           },
           initialValue: 'form',
         },
-        {name: 'backgroundImage', title: 'Background Image', type: 'image', options: {hotspot: true}},
       ],
     }),
 
@@ -378,7 +379,6 @@ export default defineType({
           },
           initialValue: 'phone',
         },
-        {name: 'backgroundImage', title: 'Background Image', type: 'image', options: {hotspot: true}},
       ],
     }),
 

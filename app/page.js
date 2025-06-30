@@ -26,7 +26,6 @@ async function getData() {
       // SEO Fields
       seoTitle,
       seoDescription,
-      seoImage { alt, asset-> },
       // Hero Section
       hero {
         title,
@@ -141,9 +140,9 @@ async function getData() {
 export async function generateMetadata() {
   const siteData = await getData();
 
-  // Prepare Open Graph images, checking if seoImage and asset exist
+  // Prepare Open Graph images, checking if about.image and asset exist
   const openGraphImages = [];
-  if (siteData.seoImage && siteData.seoImage.asset) {
+  if (siteData.about && siteData.about.image && siteData.about.image.asset) {
     // Assuming urlFor is available in this scope. If not, it needs to be imported.
     // You might need to import { urlFor } from './sanity/lib/client' or './sanity/lib/image'
     // For now, let's assume a helper function or direct URL generation for simplicity if urlFor isn't easily available here.
@@ -152,7 +151,7 @@ export async function generateMetadata() {
     // As a placeholder if urlFor is not directly usable or to avoid breaking the build:
     // openGraphImages.push({ url: 'path_to_your_default_image.jpg' }); // Fallback or ensure urlFor is correctly used
      // If you have urlFor imported:
-     openGraphImages.push({ url: urlFor(siteData.seoImage.asset).width(1200).height(630).url(), alt: siteData.seoImage.alt || siteData.seoTitle });
+     openGraphImages.push({ url: urlFor(siteData.about.image.asset).width(1200).height(630).url(), alt: siteData.about.image.alt || siteData.seoTitle });
   }
 
 

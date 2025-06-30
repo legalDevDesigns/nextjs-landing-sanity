@@ -25,15 +25,6 @@ const getFeatureGridClass = (count) => {
   return 'grid grid-cols-1 md:grid-cols-3 gap-8';
 };
 
-// Helper function to convert hex to RGBA
-const hexToRgba = (hex, alpha = 1) => {
-  if (!hex || typeof hex !== 'string') return null; // Return null or a default if hex is invalid
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
-
 // Define custom components for Portable Text if needed
 const portableTextComponents = {
   // types: { ... }, // If you have custom block types
@@ -145,8 +136,6 @@ export default function HomeClient({ siteData }) {
   // Pre-build image URLs - Pass the .asset object to urlFor
   const heroImageUrl = urlFor(hero.backgroundImage?.asset)?.url();
   const aboutImageUrl = urlFor(about.image?.asset)?.url();
-  const ctaBlock1ImageUrl = ctaBlock1?.backgroundImage ? urlFor(ctaBlock1.backgroundImage?.asset)?.url() : null;
-  const ctaBlock2ImageUrl = ctaBlock2?.backgroundImage ? urlFor(ctaBlock2.backgroundImage?.asset)?.url() : null;
 
   return (
     <main className="min-h-screen">
@@ -171,9 +160,6 @@ export default function HomeClient({ siteData }) {
           </div>
         </div>
       )}
-
-      {/* Spacer for fixed Top Bar - only if Top Bar is visible */}
-      {/* {businessInfo.name && <div className="h-10"></div>} */}
 
       {/* Hero Section - Uses hero, businessInfo */}
       {hero.title && (
@@ -387,20 +373,36 @@ export default function HomeClient({ siteData }) {
 
       {/* CTA Block 1 - uses ctaBlock1 */}
       {ctaBlock1.heading && (
-        <section className="py-16 relative overflow-hidden bg-gray-800 text-white">
-          {ctaBlock1ImageUrl && (
-            <div className="absolute inset-0 z-0">
-              <Image src={ctaBlock1ImageUrl} alt={ctaBlock1.backgroundImage?.alt || ctaBlock1.heading || 'CTA Background 1'} fill className="object-cover" />
-              <div style={{ backgroundColor: hexToRgba(secondaryColor, 0.8) }} className="absolute inset-0"></div>
-            </div>
-          )}
+        <section
+          className="py-16 relative overflow-hidden text-white"
+          style={{
+            background: `linear-gradient(135deg, ${secondaryColor} 0%, ${primaryColor} 100%)`,
+          }}
+        >
           <div className="container mx-auto px-4 text-center relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">{ctaBlock1.heading}</h2>
-            {ctaBlock1.subheading && <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">{ctaBlock1.subheading}</p>}
+            {ctaBlock1.subheading && (
+              <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">{ctaBlock1.subheading}</p>
+            )}
             {ctaBlock1.buttonText && (
               <a
-                href={ctaBlock1.buttonAction === 'form' ? '#contact-form' : (ctaBlock1.buttonAction === 'phone' && businessInfo.phone ? `tel:${businessInfo.phone}` : '#')}
-                onClick={ctaBlock1.buttonAction === 'form' ? (e) => { e.preventDefault(); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' }); } : undefined}
+                href={
+                  ctaBlock1.buttonAction === "form"
+                    ? "#contact-form"
+                    : ctaBlock1.buttonAction === "phone" && businessInfo.phone
+                    ? `tel:${businessInfo.phone}`
+                    : "#"
+                }
+                onClick={
+                  ctaBlock1.buttonAction === "form"
+                    ? (e) => {
+                        e.preventDefault();
+                        document
+                          .getElementById("contact-form")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                      }
+                    : undefined
+                }
                 style={{ backgroundColor: primaryColor, color: buttonTextColor }}
                 className="px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300 text-lg"
               >
@@ -470,20 +472,36 @@ export default function HomeClient({ siteData }) {
 
       {/* CTA Block 2 - uses ctaBlock2 */}
       {ctaBlock2.heading && (
-        <section className="py-16 relative overflow-hidden bg-gray-700 text-white">
-          {ctaBlock2ImageUrl && (
-            <div className="absolute inset-0 z-0">
-              <Image src={ctaBlock2ImageUrl} alt={ctaBlock2.backgroundImage?.alt || ctaBlock2.heading || 'CTA Background 2'} fill className="object-cover" />
-              <div style={{ backgroundColor: hexToRgba(primaryColor, 0.8) }} className="absolute inset-0"></div>
-            </div>
-          )}
+        <section
+          className="py-16 relative overflow-hidden text-white"
+          style={{
+            background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+          }}
+        >
           <div className="container mx-auto px-4 text-center relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">{ctaBlock2.heading}</h2>
-            {ctaBlock2.subheading && <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">{ctaBlock2.subheading}</p>}
+            {ctaBlock2.subheading && (
+              <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">{ctaBlock2.subheading}</p>
+            )}
             {ctaBlock2.buttonText && (
               <a
-                href={ctaBlock2.buttonAction === 'form' ? '#contact-form' : (ctaBlock2.buttonAction === 'phone' && businessInfo.phone ? `tel:${businessInfo.phone}` : '#')}
-                onClick={ctaBlock2.buttonAction === 'form' ? (e) => { e.preventDefault(); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' }); } : undefined}
+                href={
+                  ctaBlock2.buttonAction === "form"
+                    ? "#contact-form"
+                    : ctaBlock2.buttonAction === "phone" && businessInfo.phone
+                    ? `tel:${businessInfo.phone}`
+                    : "#"
+                }
+                onClick={
+                  ctaBlock2.buttonAction === "form"
+                    ? (e) => {
+                        e.preventDefault();
+                        document
+                          .getElementById("contact-form")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                      }
+                    : undefined
+                }
                 style={{ backgroundColor: secondaryColor, color: buttonTextColor }}
                 className="px-8 py-3 rounded-lg font-bold hover:opacity-80 transition-opacity duration-300 text-lg"
               >
