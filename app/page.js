@@ -21,7 +21,8 @@ async function getData() {
         phone,
         email,
         address,
-        hoursOfOperation
+        hoursOfOperation,
+        logo { alt, asset-> }
       },
       // SEO Fields
       seoTitle,

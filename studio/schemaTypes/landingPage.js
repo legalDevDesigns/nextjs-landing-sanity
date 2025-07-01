@@ -169,6 +169,15 @@ export default defineType({
       group: 'businessInfo', // Ensure this group exists or assign to another like 'content' or 'seo'
       options: { collapsible: true, collapsed: false },
       fields: [
+        defineField({
+            name: 'logo',
+            title: 'Business Logo',
+            type: 'image',
+            description: 'Optional: Upload the business logo. It will appear in the header.',
+            options: {
+                hotspot: true,
+            },
+        }),
         defineField({ 
             name: 'name', 
             title: 'Business Name', 

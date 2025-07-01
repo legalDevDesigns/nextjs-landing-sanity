@@ -108,6 +108,7 @@ export default function HomeClient({ siteData }) {
 
   // Extract nested data with safeguards from safeSiteData
   const businessInfo = safeSiteData.businessInfo || {};
+  const logoUrl = urlFor(businessInfo.logo?.asset)?.url();
   const hero = safeSiteData.hero || {};
   const mainFeatures = safeSiteData.mainFeatures || [];
   const secondaryFeatures = safeSiteData.secondaryFeatures || [];
@@ -153,7 +154,12 @@ export default function HomeClient({ siteData }) {
       {businessInfo.name && (
         <div style={{ backgroundColor: secondaryColor, color: headerFooterTextColor }} className="py-2 px-4 w-full z-50">
           <div className="container mx-auto flex justify-between items-center">
-            <span className="font-bold">{businessInfo.name}</span>
+            <div className="flex items-center space-x-3">
+              {logoUrl && (
+                <Image src={logoUrl} alt={businessInfo.logo?.alt || `${businessInfo.name} logo`} width={40} height={40} className="h-10 w-auto" />
+              )}
+              <span className="font-bold">{businessInfo.name}</span>
+            </div>
             <div className="flex space-x-4">
               {businessInfo.phone && <a href={`tel:${businessInfo.phone}`} style={{ color: headerFooterTextColor }} className="hover:opacity-80 text-sm">{businessInfo.phone}</a>}
             </div>
