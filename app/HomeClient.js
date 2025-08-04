@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { PortableText } from '@portabletext/react';
 import { urlFor } from './sanity/lib/client';
 import DynamicIcon from './components/DynamicIcon';
+import GoogleAnalytics from './components/GoogleAnalytics';
 
 // Helper function to determine grid classes based on feature count
 const getFeatureGridClass = (count) => {
@@ -140,6 +141,9 @@ export default function HomeClient({ siteData }) {
 
   return (
     <main className="min-h-screen">
+      {/* Google Analytics - Load tracking for this site */}
+      <GoogleAnalytics trackingId={siteData.googleAnalyticsId} />
+      
       {/* Remove the commented out block below */}
       {/* 
       <form name="contact" netlify="true" netlify-honeypot="bot-field" hidden>

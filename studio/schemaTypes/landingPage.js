@@ -150,6 +150,14 @@ export default defineType({
         group: 'seo',
         validation: Rule => Rule.max(160).warning('Best practice is under 160 characters')
      }),
+     defineField({
+        name: 'googleAnalyticsId',
+        title: 'Google Analytics Tracking ID',
+        type: 'string',
+        description: 'Google Analytics tracking ID (e.g., G-XXXXXXXXXX) for this site. Leave blank to disable tracking.',
+        group: 'seo',
+        validation: Rule => Rule.regex(/^(G-[A-Z0-9]{10}|GA_MEASUREMENT_ID|)$/).warning('Please enter a valid Google Analytics 4 tracking ID (G-XXXXXXXXXX) or leave blank')
+     }),
      /*
      defineField({
         name: 'seoImage',

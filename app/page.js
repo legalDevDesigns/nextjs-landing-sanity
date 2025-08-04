@@ -27,6 +27,7 @@ async function getData() {
       // SEO Fields
       seoTitle,
       seoDescription,
+      googleAnalyticsId,
       // Hero Section
       hero {
         title,
